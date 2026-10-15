@@ -12,6 +12,7 @@ main{max-width:1000px;margin:auto;padding:24px 16px 48px}.top{display:flex;align
 h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spacing:-.04em}h1 em{color:var(--gold);font-style:normal}.sub{color:var(--muted);max-width:640px}
 .panel{margin-top:24px;background:linear-gradient(145deg,#202d24,#151e18);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 20px 70px #0005}
 .panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}.panelhead h2{font-size:1.05rem;margin:0}.small{color:var(--muted);font-size:.86rem}
+.walletbox{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:14px;border:1px solid #6b6037;background:#262719;border-radius:16px;margin-top:18px}.walletcopy{flex:1;min-width:180px}.walletcopy b{display:block;color:var(--gold)}#walletStatus{font-size:.86rem;color:var(--muted);overflow-wrap:anywhere}.wallet-note{font-size:.78rem;color:var(--muted);margin:10px 0 0}.wallet-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}#disconnectWallet{background:#263229;color:#f4f4e9;border-color:#526554}
 .track{border-radius:15px;overflow:hidden;border:1px solid #4e614d;background:#526747;position:relative}
 .lane{height:52px;display:flex;align-items:center;position:relative;border-bottom:1px dashed #d5e0a44d;background:linear-gradient(90deg,#526747,#344b37)}.lane:nth-child(even){background:linear-gradient(90deg,#485d40,#2c4432)}.lane:last-child{border-bottom:0}
 .lane:after{content:"";position:absolute;right:10%;height:100%;border-left:3px dashed #f7efca99}
@@ -21,11 +22,17 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}.selectwrap{flex:1;min-width:200px}label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px}select,button{font:inherit;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}select{width:100%;background:#111a14;color:#fff}button{cursor:pointer;font-weight:800;background:var(--gold);border-color:var(--gold);color:#17190f}button:disabled{opacity:.55;cursor:wait}.result{margin-top:16px;padding:14px;border-radius:12px;background:#111a14;border:1px solid var(--line);min-height:54px}.result strong{color:var(--gold)}.horses{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}.horsecard{padding:12px;border:1px solid var(--line);border-radius:14px;background:#111a14}.horsecard .emoji{font-size:27px}.horsecard b{display:block;font-size:.9rem}.horsecard small{color:var(--muted)}footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:24px}
 @media(max-width:560px){.horses{grid-template-columns:repeat(2,minmax(0,1fr))}.lane{height:46px}.horse{font-size:23px}.panel{padding:12px}}
 </style>
+<script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
 </head>
 <body><main>
 <header class="top"><div class="brand">TON <span>HORSE RACING</span></div><div class="tag">ARCADE DEMO · SIN DINERO REAL</div></header>
 <h1>Ocho caballos.<br><em>Una sola meta.</em></h1>
-<p class="sub">Elegí tu caballo favorito y mirá una carrera arcade. El resultado se genera para entretenimiento; no hay apuestas, depósitos, premios ni conexión de billetera.</p>
+<p class="sub">Elegí tu caballo favorito y mirá una carrera arcade. El resultado se genera para entretenimiento; no hay apuestas, depósitos ni premios.</p>
+<section class="walletbox" aria-label="Conexión de billetera">
+<div class="walletcopy"><b>💎 TON Wallet</b><div id="walletStatus" aria-live="polite">Billetera desconectada · conexión opcional</div></div>
+<div class="wallet-actions"><div id="ton-connect"></div><button id="disconnectWallet" type="button" hidden>Desconectar</button></div>
+</section>
+<p class="wallet-note">La conexión solo muestra tu dirección pública. Esta demo no solicita firmas, no envía transacciones y no mueve fondos. Nunca compartas tu frase semilla.</p>
 <section class="panel">
 <div class="panelhead"><h2>🏁 Pista principal</h2><span class="small" id="raceId">CARRERA DEMO #001</span></div>
 <div class="track" id="track" aria-label="Pista con ocho caballos">
@@ -43,9 +50,35 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <div class="result" id="result" aria-live="polite">Elegí un favorito y comenzá una carrera de demostración.</div>
 <div class="horses" id="horseCards"></div>
 </section>
-<footer>Proyecto de demostración · No acepta fondos · Sin valor monetario · Resultado aleatorio para entretenimiento</footer>
+<footer>Proyecto de demostración · Sin apuestas · Sin depósitos · Sin transacciones · Resultado aleatorio para entretenimiento</footer>
 </main>
 <script>
+const walletStatus=document.querySelector('#walletStatus');
+const disconnectButton=document.querySelector('#disconnectWallet');
+try {
+ if (!window.TON_CONNECT_UI) throw new Error('No se pudo cargar TON Connect');
+ const tonConnectUI=new TON_CONNECT_UI.TonConnectUI({
+  manifestUrl:'https://nicolamona.github.io/ton-horse-racing/tonconnect-manifest.json',
+  buttonRootId:'ton-connect'
+ });
+ tonConnectUI.uiOptions={twaReturnUrl:'https://t.me/'};
+ function updateWallet(wallet){
+  if(wallet && wallet.account && wallet.account.address){
+   const address=wallet.account.address;
+   walletStatus.textContent='Conectada · '+address.slice(0,6)+'…'+address.slice(-6);
+   disconnectButton.hidden=false;
+  } else {
+   walletStatus.textContent='Billetera desconectada · conexión opcional';
+   disconnectButton.hidden=true;
+  }
+ }
+ tonConnectUI.onStatusChange(updateWallet);
+ disconnectButton.addEventListener('click',async()=>{
+  try { await tonConnectUI.disconnect(); } catch(e) { walletStatus.textContent='No se pudo desconectar. Intentá de nuevo.'; }
+ });
+} catch(e) {
+ walletStatus.textContent='TON Connect no se pudo cargar. Revisá tu conexión e intentá actualizar.';
+}
 const names=['Relámpago','Tormenta','Centella','Trueno','Cometa','Sombra','Fuego','Estrella'];
 const horses=[...document.querySelectorAll('.horse')], start=document.querySelector('#start'), result=document.querySelector('#result'), favorite=document.querySelector('#favorite');
 const cards=document.querySelector('#horseCards');let race=1;
