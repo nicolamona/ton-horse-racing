@@ -25,9 +25,11 @@ Review scope: source-level review of `backend/worker.js`, `backend/schema.sql`, 
 - **No private keys, seed phrases, deposit monitor, financial ledger, payout service, or blockchain verifier belongs in this demo API.**
 - **No live deployment evidence was found in the repository configuration.** The D1 identifier remains a placeholder in `wrangler.toml`.
 
+- The frontend's fictional game rules are covered by `../game-logic.test.mjs`, including amount validation, all eight reward places, quarter-unit third-place rewards, net results, and completion of a unique eight-horse finish order.
+
 ## Acceptance checks
 
-1. `cd backend && npm test` passes locally with Node.js 18+.
+1. `cd backend && npm test` passes with Node.js 18+ (latest PR CI: 37 passed, 0 failed).
 2. The GitHub Actions run for the pull request completes successfully.
 3. Payment and transaction routes remain HTTP 403 with and without a DB binding.
 4. Unknown paths return 404; unsupported methods return 405.
