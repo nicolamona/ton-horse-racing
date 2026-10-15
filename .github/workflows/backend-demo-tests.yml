@@ -1,0 +1,31 @@
+name: Backend demo safety tests
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-demo-tests.yml"
+  push:
+    branches:
+      - main
+      - security-readiness-prep
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-demo-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  demo-safety-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run demo-only safety tests
+        working-directory: backend
+        run: npm test
