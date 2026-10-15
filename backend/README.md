@@ -5,10 +5,11 @@ This is a **demo-only** Cloudflare Worker API scaffold. It does not handle money
 ## Included
 
 - `GET /health`: health check and explicit `paymentsEnabled: false`.
-- `GET /api/races?limit=20`: list recent demo races.
-- `POST /api/races`: store a demo race (horse numbers 1–8; duplicate race IDs are idempotent).
+- `GET /api/races?walletAddress=...&limit=20`: list demo races grouped by the supplied public wallet address.
+- `POST /api/races`: store a demo race with a public wallet address (horse numbers 1–8; duplicate race IDs are idempotent).
 - `/api/payments/*` and `/api/transactions/*`: deliberately disabled.
-- D1 schema contains only demo race history; no wallet addresses, balances, or transaction records.
+- D1 schema stores a public wallet address only as a grouping label for demo history; it stores no balances or transaction records.
+- The browser keeps a separate local history for each connected address, plus a separate guest history.
 
 ## Important
 
@@ -24,4 +25,6 @@ GitHub Pages hosts only the static frontend. This Worker is **not deployed yet**
 6. Test `GET /health`, then test demo race history with non-sensitive sample data.
 7. Configure the frontend API URL only after the Worker is deployed and tested.
 
-No private keys, seed phrases, signatures, deposits, payouts, or real-money balances belong in this project. The connected wallet remains optional and display-only.
+**Identity limitation:** a public address sent by a browser is not proof that the sender controls that wallet. Do not treat server-side records as authenticated or private until a proper wallet-ownership proof and authorization layer is implemented. This scaffold intentionally does not request signatures or perform blockchain transactions.
+
+No private keys, seed phrases, deposits, payouts, or real-money balances belong in this project. The connected wallet remains optional and display-only.
