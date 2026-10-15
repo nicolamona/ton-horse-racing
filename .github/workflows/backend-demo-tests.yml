@@ -15,6 +15,10 @@ on:
       - security-readiness-prep
     paths:
       - "backend/**"
+      - "index.html"
+      - "game-logic.mjs"
+      - "game-logic.test.mjs"
+      - "scripts/**"
       - ".github/workflows/backend-demo-tests.yml"
 
 permissions:
