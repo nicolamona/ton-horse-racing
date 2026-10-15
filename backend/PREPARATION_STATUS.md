@@ -9,6 +9,7 @@ Last reviewed: 2026-10-15
 - GitHub Pages has a successful deployment workflow. This verifies publication of the static site only; it does not verify a deployed API.
 - The optional Cloudflare Worker is a demo-only scaffold and is not known to be deployed.
 - The D1 schema stores demo race history only; it contains no balance, deposit, or payout ledger.
+- The frontend uses a small tested game-rules module for fictional reward calculation and finish-order completion. Third-place rewards retain quarter-unit precision so balances remain valid after reload.
 - `backend/wrangler.toml` still contains `REPLACE_WITH_YOUR_D1_DATABASE_ID`.
 - The Worker reports `paymentsEnabled: false` and rejects payment/transaction route families with HTTP 403.
 - The main branch was observed without branch protection or required status checks. Review repository settings before relying on CI as an enforced merge gate.
@@ -16,6 +17,7 @@ Last reviewed: 2026-10-15
 ## Automated checks
 
 - Run locally with Node.js 18 or newer: `cd backend && npm test`.
+- The current suite contains 37 automated tests: 23 backend/HTTP tests and 14 demo game-rule tests. The latest PR workflow passed all 37 tests with zero failures.
 - The suite now covers demo-only health, blocked financial routes, CORS origin behavior, preflight, route/method handling, malformed JSON, JSON type validation, body size, race ID and wallet-address formats, horse number validation, parameterized SQL, duplicate IDs, and generic database error responses.
 - GitHub Actions runs the tests for relevant changes on `main` and `security-readiness-prep`, and for pull requests touching backend/workflow files.
 - CI results must be read from the linked run and must not be inferred from a local commit. The expanded suite has to complete successfully before this branch can be considered validated.
@@ -29,6 +31,7 @@ Last reviewed: 2026-10-15
 - CORS is not authentication and does not prevent non-browser clients from calling an endpoint.
 - No rate limiter, wallet-ownership proof, server-authoritative race engine, deposit monitor, real-balance ledger, payout service, or blockchain transaction verifier is implemented.
 - The address format check is a basic input-shape check, not full TON address validation.
+- Browser-level end-to-end testing has not been executed; automated game tests cover the extracted pure rules, not the full animation/DOM/localStorage lifecycle.
 - No dependency installation is required for the Node built-in test suite; the frontend still loads TON Connect UI from an external CDN.
 
 ## Operational and production gates
