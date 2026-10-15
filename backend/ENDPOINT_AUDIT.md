@@ -29,7 +29,7 @@ Review scope: source-level review of `backend/worker.js`, `backend/schema.sql`, 
 
 ## Acceptance checks
 
-1. `cd backend && npm test` passes with Node.js 18+ (latest PR CI: 37 passed, 0 failed).
+1. `cd backend && npm test` passes with Node.js 18+ (latest push and PR CI: 38 passed, 0 failed).
 2. The GitHub Actions run for the pull request completes successfully.
 3. Payment and transaction routes remain HTTP 403 with and without a DB binding.
 4. Unknown paths return 404; unsupported methods return 405.
