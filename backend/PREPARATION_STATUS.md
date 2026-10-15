@@ -25,9 +25,10 @@ Last reviewed: 2026-10-15
 ## Automated checks and evidence
 
 - Run with Node.js 18 or newer: `cd backend && npm test`.
-- The previous suite contained 38 automated tests (24 backend/HTTP mock-D1 tests and 14 demo game-rule tests). The verifier prototype adds 13 unit tests, for 51 total expected tests once CI confirms the branch head.
-- Relevant CI evidence for the preceding documentation-only commit: [run 38822921818](https://github.com/nicolamona/ton-horse-racing/actions/runs/38822921818). Check the latest run after code/test changes before treating the new tests as passing.
-- These are CI results for their referenced commits, not proof of production safety. The workflow does not verify a live Worker/D1 deployment or real TON transactions.
+- The previous suite contained 38 automated tests (24 backend/HTTP mock-D1 tests and 14 demo game-rule tests). The verifier prototype adds 14 unit tests, for 52 total expected tests.
+- GitHub Actions run [38825513490](https://github.com/nicolamona/ton-horse-racing/actions/runs/38825513490) completed successfully for the commit containing the verifier module and its tests. The test step and frontend syntax/demo-only guard step both passed.
+- Later commits only updated documentation; the code/test commit's successful CI run is evidence for the verifier tests, but is not a new run against the documentation-only branch head.
+- CI does not verify a live Worker/D1 deployment or real TON transactions.
 - No browser E2E, live Worker/D1 integration, TON testnet transaction test, independent secret scan, or software-composition-analysis scan was executed in the source review.
 
 ## Risks and limits
