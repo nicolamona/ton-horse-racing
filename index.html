@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101713">
+<title>TON Horse Racing — Demo</title>
+<style>
+:root{color-scheme:dark;--bg:#101713;--panel:#19231d;--gold:#e8c879;--muted:#9caa9f;--line:#344438}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#27372b 0,#101713 55%);color:#f4f4e9;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+main{max-width:1000px;margin:auto;padding:24px 16px 48px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{font-weight:900;letter-spacing:.08em}.brand span{color:var(--gold)}.tag{border:1px solid #61735d;border-radius:99px;padding:5px 10px;color:#d9e7d4;font-size:.78rem}
+h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spacing:-.04em}h1 em{color:var(--gold);font-style:normal}.sub{color:var(--muted);max-width:640px}
+.panel{margin-top:24px;background:linear-gradient(145deg,#202d24,#151e18);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 20px 70px #0005}
+.panelhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}.panelhead h2{font-size:1.05rem;margin:0}.small{color:var(--muted);font-size:.86rem}
+.track{border-radius:15px;overflow:hidden;border:1px solid #4e614d;background:#526747;position:relative}
+.lane{height:52px;display:flex;align-items:center;position:relative;border-bottom:1px dashed #d5e0a44d;background:linear-gradient(90deg,#526747,#344b37)}.lane:nth-child(even){background:linear-gradient(90deg,#485d40,#2c4432)}.lane:last-child{border-bottom:0}
+.lane:after{content:"";position:absolute;right:10%;height:100%;border-left:3px dashed #f7efca99}
+.lane-label{z-index:2;width:35px;text-align:center;font-weight:800;color:#f6e7b5;font-size:.8rem;flex-shrink:0}
+.horse{z-index:2;font-size:27px;transform:scaleX(-1);filter:drop-shadow(0 2px 2px #0007);position:absolute;left:44px;transition:left .12s linear}
+.finish{position:absolute;z-index:1;right:calc(10% - 8px);top:0;bottom:0;width:16px;background:repeating-conic-gradient(#fff 0% 25%,#202020 0% 50%) 0/16px 16px;opacity:.8}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}.selectwrap{flex:1;min-width:200px}label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px}select,button{font:inherit;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}select{width:100%;background:#111a14;color:#fff}button{cursor:pointer;font-weight:800;background:var(--gold);border-color:var(--gold);color:#17190f}button:disabled{opacity:.55;cursor:wait}.result{margin-top:16px;padding:14px;border-radius:12px;background:#111a14;border:1px solid var(--line);min-height:54px}.result strong{color:var(--gold)}.horses{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}.horsecard{padding:12px;border:1px solid var(--line);border-radius:14px;background:#111a14}.horsecard .emoji{font-size:27px}.horsecard b{display:block;font-size:.9rem}.horsecard small{color:var(--muted)}footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:24px}
+@media(max-width:560px){.horses{grid-template-columns:repeat(2,minmax(0,1fr))}.lane{height:46px}.horse{font-size:23px}.panel{padding:12px}}
+</style>
+</head>
+<body><main>
+<header class="top"><div class="brand">TON <span>HORSE RACING</span></div><div class="tag">ARCADE DEMO · SIN DINERO REAL</div></header>
+<h1>Ocho caballos.<br><em>Una sola meta.</em></h1>
+<p class="sub">Elegí tu caballo favorito y mirá una carrera arcade. El resultado se genera para entretenimiento; no hay apuestas, depósitos, premios ni conexión de billetera.</p>
+<section class="panel">
+<div class="panelhead"><h2>🏁 Pista principal</h2><span class="small" id="raceId">CARRERA DEMO #001</span></div>
+<div class="track" id="track" aria-label="Pista con ocho caballos">
+<div class="finish"></div>
+<div class="lane"><span class="lane-label">1</span><span class="horse" data-horse="0">🐎</span></div>
+<div class="lane"><span class="lane-label">2</span><span class="horse" data-horse="1">🐴</span></div>
+<div class="lane"><span class="lane-label">3</span><span class="horse" data-horse="2">🐎</span></div>
+<div class="lane"><span class="lane-label">4</span><span class="horse" data-horse="3">🐴</span></div>
+<div class="lane"><span class="lane-label">5</span><span class="horse" data-horse="4">🐎</span></div>
+<div class="lane"><span class="lane-label">6</span><span class="horse" data-horse="5">🐴</span></div>
+<div class="lane"><span class="lane-label">7</span><span class="horse" data-horse="6">🐎</span></div>
+<div class="lane"><span class="lane-label">8</span><span class="horse" data-horse="7">🐴</span></div>
+</div>
+<div class="controls"><div class="selectwrap"><label for="favorite">Tu caballo favorito (solo elección visual)</label><select id="favorite"><option value="0">1 · Relámpago</option><option value="1">2 · Tormenta</option><option value="2">3 · Centella</option><option value="3">4 · Trueno</option><option value="4">5 · Cometa</option><option value="5">6 · Sombra</option><option value="6">7 · Fuego</option><option value="7">8 · Estrella</option></select></div><button id="start">▶ Iniciar carrera</button></div>
+<div class="result" id="result" aria-live="polite">Elegí un favorito y comenzá una carrera de demostración.</div>
+<div class="horses" id="horseCards"></div>
+</section>
+<footer>Proyecto de demostración · No acepta fondos · Sin valor monetario · Resultado aleatorio para entretenimiento</footer>
+</main>
+<script>
+const names=['Relámpago','Tormenta','Centella','Trueno','Cometa','Sombra','Fuego','Estrella'];
+const horses=[...document.querySelectorAll('.horse')], start=document.querySelector('#start'), result=document.querySelector('#result'), favorite=document.querySelector('#favorite');
+const cards=document.querySelector('#horseCards');let race=1;
+cards.innerHTML=names.map((n,i)=>'<div class="horsecard"><div class="emoji">'+(i%2?'🐴':'🐎')+'</div><b>'+(i+1)+' · '+n+'</b><small>Corredor de demo</small></div>').join('');
+function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px'});}
+start.addEventListener('click',()=>{
+ if(start.disabled)return;start.disabled=true;reset();result.textContent='¡Ya largaron! 🏇';const lanes=document.querySelector('.track').clientWidth;const max=Math.max(80,lanes*.77);let progress=Array(8).fill(0);let frame=0;
+ const timer=setInterval(()=>{frame++;progress=progress.map((p)=>Math.min(1,p+(Math.random()*.018+.006)));horses.forEach((h,i)=>h.style.left=(44+progress[i]*max)+'px');const winner=progress.findIndex(p=>p>=1);if(winner>=0||frame>220){clearInterval(timer);const sorted=progress.map((p,i)=>({p,i})).sort((a,b)=>b.p-a.p);const w=winner>=0?winner:sorted[0].i;horses[w].style.filter='drop-shadow(0 0 8px #ffe08a)';result.innerHTML='🏆 Ganador: <strong>'+names[w]+' (#'+(w+1)+')</strong>. '+(Number(favorite.value)===w?'¡Era tu favorito!':'Tu favorito fue '+names[Number(favorite.value)]+'.')+' <span class="small">Resultado solo de entretenimiento.</span>';document.querySelector('#raceId').textContent='CARRERA DEMO #'+String(++race).padStart(3,'0');start.disabled=false;}},70);
+});
+</script></body></html>
