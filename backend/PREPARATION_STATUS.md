@@ -12,16 +12,17 @@ Last reviewed: 2026-10-15
 - The frontend uses a small tested game-rules module for fictional reward calculation and finish-order completion. Third-place rewards retain quarter-unit precision so balances remain valid after reload.
 - `backend/wrangler.toml` still contains `REPLACE_WITH_YOUR_D1_DATABASE_ID`.
 - The Worker reports `paymentsEnabled: false` and rejects payment/transaction route families with HTTP 403.
-- Branch protection and required status checks could not be verified through the available GitHub integration (API access was denied). Confirm them in repository settings before relying on CI as an enforced merge gate.
+- The GitHub branch listing reports `protected: false` for both `main` and `security-readiness-prep`. Configure and verify branch protection and required status checks in repository settings before relying on CI as an enforced merge gate.
 
-## Automated checks
+## Automated checks and evidence
 
 - Run locally with Node.js 18 or newer: `cd backend && npm test`.
-- The current suite contains 38 automated tests: 24 backend/HTTP tests and 14 demo game-rule tests. The latest push and pull-request workflows passed all 38 tests with zero failures; the frontend syntax/demo-only guard check also passed.
-- The suite now covers demo-only health, blocked financial routes, CORS origin behavior, preflight, route/method handling, malformed JSON, JSON type validation, body size, race ID and wallet-address formats, horse number validation, parameterized SQL, duplicate IDs, and generic database error responses.
-- GitHub Actions runs the tests for relevant changes on `main` and `security-readiness-prep`, and for pull requests touching backend/workflow files.
-- CI results must be read from the linked run and must not be inferred from a local commit. The expanded suite has to complete successfully before this branch can be considered validated.
-- These checks are selected guardrails, not a complete security audit or live deployment verification.
+- The suite documented in this branch contains 38 automated tests: 24 backend/HTTP tests and 14 demo game-rule tests.
+- Latest inspected pull-request workflow: [run 38822413185](https://github.com/nicolamona/ton-horse-racing/actions/runs/38822413185). GitHub Actions reports success; both the test step and frontend syntax/demo-only guard step completed successfully.
+- Earlier successful PR run recorded in the PR description: [run 38822355065](https://github.com/nicolamona/ton-horse-racing/actions/runs/38822355065).
+- The workflow covers demo-only health, blocked financial routes, CORS origin behavior, preflight, route/method handling, malformed JSON, JSON type validation, body size, race ID and wallet-address formats, horse number validation, parameterized SQL, duplicate IDs, and generic database error responses.
+- These are CI results for the referenced commits, not a local re-run of the current post-documentation head and not proof of production safety. The workflow does not run on documentation-only changes outside its configured path filters, so confirm a relevant CI run after any code/test/workflow change.
+- No browser E2E, live Worker/D1 integration, TON testnet transaction test, independent secret scan, or software-composition-analysis scan was executed in this review.
 
 ## Risks and limits
 
@@ -32,11 +33,17 @@ Last reviewed: 2026-10-15
 - No rate limiter, wallet-ownership proof, server-authoritative race engine, deposit monitor, real-balance ledger, payout service, or blockchain transaction verifier is implemented.
 - The address format check is a basic input-shape check, not full TON address validation.
 - Browser-level end-to-end testing has not been executed; automated game tests cover the extracted pure rules, not the full animation/DOM/localStorage lifecycle.
-- No dependency installation is required for the Node built-in test suite; the frontend still loads TON Connect UI from an external CDN.
+- The backend test suite does not require third-party npm dependencies, but the frontend loads TON Connect UI 2.0.9 from an external CDN without Subresource Integrity. GitHub Actions use major-version tags rather than immutable full commit SHAs.
+- No dedicated automated secret/history scan or dependency/license vulnerability scan was executed; do not interpret absence of a finding in a source-level review as a clean scanner report.
 
-## Operational and production gates
+## Audit and operational documentation
 
-- See [ENDPOINT_AUDIT.md](./ENDPOINT_AUDIT.md) for route-by-route findings.
-- See [OPERATIONS_RUNBOOK.md](./OPERATIONS_RUNBOOK.md) for monitoring, incident handling, backups, recovery, and rollback guidance.
-- Keep payment and blockchain transaction routes disabled. Do not interpret this document as authorization or a deployment plan for deposits, wagering, balances, or payouts.
-- Before any future regulated-product consideration, obtain independent legal advice for every target jurisdiction and a qualified independent security review. Verify licensing, eligibility and age assurance, privacy and retention, consumer protection, dispute handling, audit obligations, monitoring, and incident response with qualified professionals.
+- [FINAL_SECURITY_AUDIT.md](./FINAL_SECURITY_AUDIT.md): source-level findings, severity, evidence boundaries, and residual risks.
+- [ENDPOINT_AUDIT.md](./ENDPOINT_AUDIT.md): route-by-route endpoint findings.
+- [TON_DEPOSIT_ARCHITECTURE.md](./TON_DEPOSIT_ARCHITECTURE.md): design-only TON transaction verification, idempotency, ledger, reconciliation, and future test strategy; no deposit functionality implemented.
+- [OPERATIONS_RUNBOOK.md](./OPERATIONS_RUNBOOK.md): monitoring, incident handling, backups, recovery, and rollback guidance.
+- [READINESS_CHECKLIST.md](./READINESS_CHECKLIST.md): security, legal, privacy, and operational gates.
+
+## Required gates
+
+Keep payment and blockchain transaction routes disabled. Do not interpret this document as authorization or a deployment plan for deposits, wagering, balances, or payouts. Before any future regulated-product consideration, obtain independent legal advice for every target jurisdiction and an independent security review. Verify licensing, eligibility and age assurance, privacy and retention, consumer protection, dispute handling, audit obligations, monitoring, incident response, rate limiting, backup restoration, immutable action pinning, branch protection, browser E2E, live demo API integration, and testnet-only transaction cases.
