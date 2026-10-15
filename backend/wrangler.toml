@@ -1,0 +1,11 @@
+name = "ton-horse-racing-demo-api"
+main = "worker.js"
+compatibility_date = "2026-10-15"
+
+# Before deployment, create a Cloudflare D1 database and replace the placeholders.
+# Keep this API demo-only: no payment routes, wallet secrets, deposits, or payouts.
+[[d1_databases]]
+binding = "DB"
+database_name = "ton-horse-racing-demo"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"
