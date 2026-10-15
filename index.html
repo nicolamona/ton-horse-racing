@@ -49,13 +49,14 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <div class="controls"><div class="selectwrap"><label for="favorite">Tu caballo favorito (solo elección visual)</label><select id="favorite"><option value="0">1 · Relámpago</option><option value="1">2 · Tormenta</option><option value="2">3 · Centella</option><option value="3">4 · Trueno</option><option value="4">5 · Cometa</option><option value="5">6 · Sombra</option><option value="6">7 · Fuego</option><option value="7">8 · Estrella</option></select></div><button id="start">▶ Iniciar carrera</button></div>
 <div class="result" id="result" aria-live="polite">Elegí un favorito y comenzá una carrera de demostración.</div>
 <div class="horses" id="horseCards"></div>
-<div class="history"><h3>📜 Historial local</h3><p class="empty" id="historyEmpty">Todavía no jugaste ninguna carrera en este dispositivo.</p><ol id="raceHistory"></ol><p class="wallet-note">Se guarda solo en este navegador. No se sincroniza ni representa saldo, apuesta o premio.</p></div>
+<div class="history"><h3>📜 Historial del jugador</h3><p class="small" id="historyIdentity">Modo invitado · este dispositivo</p><p class="empty" id="historyEmpty">Todavía no jugaste ninguna carrera en este perfil.</p><ol id="raceHistory"></ol><p class="wallet-note">El historial local se separa por dirección conectada en este dispositivo. La sincronización entre dispositivos requiere desplegar la API; la dirección pública por sí sola no demuestra que alguien sea su dueño.</p></div>
 </section>
 <footer>Proyecto de demostración · Sin apuestas · Sin depósitos · Sin transacciones · Resultado aleatorio para entretenimiento</footer>
 </main>
 <script>
 const walletStatus=document.querySelector('#walletStatus');
 const disconnectButton=document.querySelector('#disconnectWallet');
+let connectedWalletAddress='';
 try {
  if (!window.TON_CONNECT_UI) throw new Error('No se pudo cargar TON Connect');
  const tonConnectUI=new TON_CONNECT_UI.TonConnectUI({
@@ -66,9 +67,13 @@ try {
  function updateWallet(wallet){
   if(wallet && wallet.account && wallet.account.address){
    const address=wallet.account.address;
+   connectedWalletAddress=address;
+   renderHistory();
    walletStatus.textContent='Conectada · '+address.slice(0,6)+'…'+address.slice(-6);
    disconnectButton.hidden=false;
   } else {
+   connectedWalletAddress='';
+   renderHistory();
    walletStatus.textContent='Billetera desconectada · conexión opcional';
    disconnectButton.hidden=true;
   }
@@ -83,10 +88,11 @@ try {
 const names=['Relámpago','Tormenta','Centella','Trueno','Cometa','Sombra','Fuego','Estrella'];
 const horses=[...document.querySelectorAll('.horse')], start=document.querySelector('#start'), result=document.querySelector('#result'), favorite=document.querySelector('#favorite');
 const cards=document.querySelector('#horseCards');let race=1;
-const historyList=document.querySelector('#raceHistory'),historyEmpty=document.querySelector('#historyEmpty');
-function loadHistory(){try{const rows=JSON.parse(localStorage.getItem('tonHorseDemoHistory')||'[]');return Array.isArray(rows)?rows.slice(0,10):[]}catch{return []}}
+const historyList=document.querySelector('#raceHistory'),historyEmpty=document.querySelector('#historyEmpty'),historyIdentity=document.querySelector('#historyIdentity');
+function historyStorageKey(){return connectedWalletAddress?'tonHorseDemoHistory:wallet:'+connectedWalletAddress:'tonHorseDemoHistory:guest'}
+function loadHistory(){try{const rows=JSON.parse(localStorage.getItem(historyStorageKey())||'[]');return Array.isArray(rows)?rows.slice(0,10):[]}catch{return []}}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,char=>{if(char==='&')return '&amp;';if(char==='<')return '&lt;';if(char==='>')return '&gt;';if(char==='"')return '&quot;';return '&#39;';});}
-function saveHistory(winnerIndex,favoriteIndex){const rows=loadHistory();rows.unshift({race:document.querySelector('#raceId').textContent,winner:names[winnerIndex],favorite:names[favoriteIndex],date:new Date().toLocaleString()});try{localStorage.setItem('tonHorseDemoHistory',JSON.stringify(rows.slice(0,10)))}catch{}renderHistory();}
+function saveHistory(winnerIndex,favoriteIndex){const rows=loadHistory();rows.unshift({race:document.querySelector('#raceId').textContent,winner:names[winnerIndex],favorite:names[favoriteIndex],date:new Date().toLocaleString()});try{localStorage.setItem(historyStorageKey(),JSON.stringify(rows.slice(0,10)))}catch{}renderHistory();}
 renderHistory();
 cards.innerHTML=names.map((n,i)=>'<div class="horsecard"><div class="emoji">'+(i%2?'🐴':'🐎')+'</div><b>'+(i+1)+' · '+n+'</b><small>Corredor de demo</small></div>').join('');
 function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px'});}
