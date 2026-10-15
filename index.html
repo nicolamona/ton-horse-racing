@@ -57,6 +57,7 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 const walletStatus=document.querySelector('#walletStatus');
 const disconnectButton=document.querySelector('#disconnectWallet');
 let connectedWalletAddress='';
+function refreshHistorySafely(){try{renderHistory()}catch(e){/* The wallet callback may fire before history elements initialize. */}}
 try {
  if (!window.TON_CONNECT_UI) throw new Error('No se pudo cargar TON Connect');
  const tonConnectUI=new TON_CONNECT_UI.TonConnectUI({
@@ -68,12 +69,12 @@ try {
   if(wallet && wallet.account && wallet.account.address){
    const address=wallet.account.address;
    connectedWalletAddress=address;
-   renderHistory();
+   refreshHistorySafely();
    walletStatus.textContent='Conectada · '+address.slice(0,6)+'…'+address.slice(-6);
    disconnectButton.hidden=false;
   } else {
    connectedWalletAddress='';
-   renderHistory();
+   refreshHistorySafely();
    walletStatus.textContent='Billetera desconectada · conexión opcional';
    disconnectButton.hidden=true;
   }
