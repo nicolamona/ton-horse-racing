@@ -7,7 +7,8 @@ Mini juego de carreras arcade publicado como sitio estático.
 - `index.html`: interfaz adaptable a móviles, ocho caballos, carrera animada y ganador aleatorio para entretenimiento.
 - Conexión opcional mediante TON Connect: muestra una dirección pública abreviada. No solicita firmas ni envía transacciones.
 - Saldo inicial de 1.000 fichas arcade ficticias, separado por perfil invitado o dirección de wallet en ese dispositivo; se puede restablecer a 1.000.
-- Campo para elegir cuántas fichas virtuales se asignan a cada carrera; la cantidad se descuenta del saldo ficticio, se recuerda por perfil y aparece en el historial de las últimas 10 carreras.
+- Campo para elegir cuántas fichas virtuales se asignan a cada carrera; la cantidad se descuenta del saldo ficticio y se recuerda por perfil.
+- Recompensas arcade al finalizar: el caballo elegido recibe fichas ficticias equivalentes a ×3 de la cantidad asignada si termina primero, ×2 si termina segundo, ×0,5 si termina tercero y 0 del cuarto al octavo. El historial registra puesto, recompensa y resultado neto.
 - Historial local de las últimas 10 carreras guardado en el navegador del jugador.
 - `backend/`: infraestructura opcional de API demo para Cloudflare Workers + D1, con comprobación de salud e historial de carreras ficticias.
 - **Las fichas son puntos ficticios de arcade, no tokens TON reales.** No se pueden comprar ni retirar, no tienen valor monetario y no hay apuestas con dinero, premios, pagos ni transacciones blockchain. Las rutas de pagos/transacciones del backend están deshabilitadas.
