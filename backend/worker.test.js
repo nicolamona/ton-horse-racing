@@ -20,7 +20,8 @@ async function call(path, {
   const headers = new Headers();
   if (origin !== null) headers.set("Origin", origin);
   if (body !== undefined && contentType) headers.set("Content-Type", contentType);
-  const requestBody = body === undefined
+  const hasBody = body !== undefined && method !== "GET" && method !== "HEAD";
+  const requestBody = !hasBody
     ? undefined
     : typeof body === "string" ? body : JSON.stringify(body);
   const request = new Request("https://demo-api.invalid" + path, {
@@ -219,8 +220,9 @@ test("database write errors return a generic error without exposing details", as
   const db = mockDb({ run: new Error("private database detail") });
   const response = await call("/api/races", { method: "POST", body: VALID_RACE }, { DB: db });
   assert.equal(response.status, 500);
-  assert.deepEqual(await response.json(), { error: "race_save_failed" });
-  assert.doesNotMatch(await response.clone().text(), /private database detail/);
+  const responseText = await response.text();
+  assert.deepEqual(JSON.parse(responseText), { error: "race_save_failed" });
+  assert.doesNotMatch(responseText, /private database detail/);
 });
 
 test("GET races validates wallet address and clamps the limit", async () => {
