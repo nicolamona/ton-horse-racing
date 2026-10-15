@@ -35,7 +35,7 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <p class="wallet-note">La conexión solo muestra tu dirección pública. Esta demo no solicita firmas, no envía transacciones y no mueve fondos. Nunca compartas tu frase semilla.</p>
 <section class="panel">
 <div class="panelhead"><h2>🏁 Pista principal</h2><span class="small" id="raceId">CARRERA DEMO #001</span></div>
-<div class="walletbox" style="margin:0 0 16px"><div class="walletcopy"><b>💎 Fichas TON de demo</b><div class="small">Sin valor monetario · no son TON reales</div></div><div style="text-align:right"><strong id="demoBalance" style="font-size:1.5rem;color:var(--gold)">1.000</strong><div class="small">fichas disponibles</div></div></div>
+<div class="walletbox" style="margin:0 0 16px"><div class="walletcopy"><b>💎 Fichas TON de demo</b><div class="small">Sin valor monetario · no son TON reales</div></div><div style="text-align:right"><strong id="demoBalance" style="font-size:1.5rem;color:var(--gold)">1.000</strong><div class="small">fichas disponibles</div><button id="resetDemoBalance" type="button" style="margin-top:7px;padding:7px 10px;font-size:.78rem;background:#263229;color:#f4f4e9;border-color:#526554">Restablecer fichas</button></div></div>
 <div class="track" id="track" aria-label="Pista con ocho caballos">
 <div class="finish"></div>
 <div class="lane"><span class="lane-label">1</span><span class="horse" data-horse="0">🐎</span></div>
@@ -110,7 +110,7 @@ function renderHistory(){
  historyEmpty.hidden=rows.length>0;
  rows.forEach(row=>{const item=document.createElement('li');item.textContent=(row.race||'Carrera demo')+' · Fichas: '+(Number.isFinite(Number(row.amount))?Number(row.amount).toLocaleString('es-AR'):'—')+' · Ganador: '+(row.winner||'—')+' · Favorito: '+(row.favorite||'—')+' · '+(row.date||'');historyList.appendChild(item);});
 }
-function switchProfile(){demoBalance=loadBalance();renderBalance();renderHistory();}
+function switchProfile(){demoBalance=loadBalance();renderBalance();renderHistory();try{const last=Number(localStorage.getItem(profileKey()+':lastAmount'));if(Number.isSafeInteger(last)&&last>0)amountInput.value=String(last);else amountInput.value='50'}catch{amountInput.value='50'}}
 try{switchProfile()}catch(e){console.error('Perfil demo no disponible:',e)}
 cards.innerHTML=names.map((n,i)=>'<div class="horsecard"><div class="emoji">'+(i%2?'🐴':'🐎')+'</div><b>'+(i+1)+' · '+n+'</b><small>Corredor de demo</small></div>').join('');
 function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px';h.style.filter='drop-shadow(0 2px 2px #0007)'});}
@@ -127,6 +127,6 @@ start.addEventListener('click',()=>{
  } catch(e) { console.error('Error al iniciar carrera:',e); start.disabled=false; result.textContent='No se pudo iniciar la carrera. Recargá la página e intentá otra vez.'; }
 });
 amountInput.addEventListener('change',()=>{const amount=Number(amountInput.value);if(Number.isSafeInteger(amount)&&amount>0){try{localStorage.setItem(profileKey()+':lastAmount',String(amount))}catch{}}});
-try{const last=Number(localStorage.getItem(profileKey()+':lastAmount'));if(Number.isSafeInteger(last)&&last>0)amountInput.value=String(last)}catch{}
+document.querySelector('#resetDemoBalance').addEventListener('click',()=>{demoBalance=1000;persistBalance();renderBalance();result.textContent='Saldo de fichas virtuales restablecido a 1.000. Sin valor monetario.';});
 
 </script></body></html>
