@@ -94,6 +94,14 @@ function historyStorageKey(){return connectedWalletAddress?'tonHorseDemoHistory:
 function loadHistory(){try{const rows=JSON.parse(localStorage.getItem(historyStorageKey())||'[]');return Array.isArray(rows)?rows.slice(0,10):[]}catch{return []}}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,char=>{if(char==='&')return '&amp;';if(char==='<')return '&lt;';if(char==='>')return '&gt;';if(char==='"')return '&quot;';return '&#39;';});}
 function saveHistory(winnerIndex,favoriteIndex){const rows=loadHistory();rows.unshift({race:document.querySelector('#raceId').textContent,winner:names[winnerIndex],favorite:names[favoriteIndex],date:new Date().toLocaleString()});try{localStorage.setItem(historyStorageKey(),JSON.stringify(rows.slice(0,10)))}catch{}renderHistory();}
+function renderHistory(){
+ if(!historyList||!historyEmpty||!historyIdentity)return;
+ historyIdentity.textContent=connectedWalletAddress?'Historial de '+connectedWalletAddress.slice(0,6)+'…'+connectedWalletAddress.slice(-6)+' · este dispositivo':'Modo invitado · este dispositivo';
+ const rows=loadHistory();
+ historyList.replaceChildren();
+ historyEmpty.hidden=rows.length>0;
+ rows.forEach(row=>{const item=document.createElement('li');item.textContent=(row.race||'Carrera demo')+' · Ganador: '+(row.winner||'—')+' · Favorito: '+(row.favorite||'—')+' · '+(row.date||'');historyList.appendChild(item);});
+}
 renderHistory();
 cards.innerHTML=names.map((n,i)=>'<div class="horsecard"><div class="emoji">'+(i%2?'🐴':'🐎')+'</div><b>'+(i+1)+' · '+n+'</b><small>Corredor de demo</small></div>').join('');
 function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px'});}
