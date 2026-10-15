@@ -28,7 +28,7 @@ node --version
 npm test
 ```
 
-Use Node.js 18 or newer. The suite uses Node's built-in test runner and does not require third-party test dependencies. The current CI run covers 37 tests; this does not replace browser-level end-to-end testing. Also inspect the GitHub Actions run attached to the PR; a local pass is not a substitute for the required CI result.
+Use Node.js 18 or newer. The suite uses Node's built-in test runner and does not require third-party test dependencies. The current CI run covers 38 tests; the latest push and pull-request runs passed all 38, and the frontend syntax/demo-only guard check passed. This does not replace browser-level end-to-end testing. Also inspect the GitHub Actions run attached to the PR; a local pass is not a substitute for the required CI result.
 
 ### Optional Worker health
 Only if an authorized operator has separately deployed the demo Worker, request `GET /health` from an approved test client. Expect `mode: "demo-only"`, `paymentsEnabled: false`, and a boolean `storageConfigured`. A healthy response does not prove the D1 schema is correct or the service is secure.
