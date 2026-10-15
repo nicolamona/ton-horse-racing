@@ -85,7 +85,7 @@ const horses=[...document.querySelectorAll('.horse')], start=document.querySelec
 const cards=document.querySelector('#horseCards');let race=1;
 const historyList=document.querySelector('#raceHistory'),historyEmpty=document.querySelector('#historyEmpty');
 function loadHistory(){try{const rows=JSON.parse(localStorage.getItem('tonHorseDemoHistory')||'[]');return Array.isArray(rows)?rows.slice(0,10):[]}catch{return []}}
-function renderHistory(){const rows=loadHistory();historyList.innerHTML=rows.map(row=>'<li><strong>'+row.race+'</strong> · Ganó '+row.winner+' · Favorito: '+row.favorite+' <span class="small">('+row.date+')</span></li>').join('');historyEmpty.hidden=rows.length>0;}
+function escapeHtml(value){return String(value).replace(/[&<>\"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[char]));}\nfunction renderHistory(){const rows=loadHistory();historyList.innerHTML=rows.map(row=>'<li><strong>'+escapeHtml(row.race)+'</strong> · Ganó '+escapeHtml(row.winner)+' · Favorito: '+escapeHtml(row.favorite)+' <span class="small">('+escapeHtml(row.date)+')</span></li>').join('');historyEmpty.hidden=rows.length>0;}
 function saveHistory(winnerIndex,favoriteIndex){const rows=loadHistory();rows.unshift({race:document.querySelector('#raceId').textContent,winner:names[winnerIndex],favorite:names[favoriteIndex],date:new Date().toLocaleString()});try{localStorage.setItem('tonHorseDemoHistory',JSON.stringify(rows.slice(0,10)))}catch{}renderHistory();}
 renderHistory();
 cards.innerHTML=names.map((n,i)=>'<div class="horsecard"><div class="emoji">'+(i%2?'🐴':'🐎')+'</div><b>'+(i+1)+' · '+n+'</b><small>Corredor de demo</small></div>').join('');
