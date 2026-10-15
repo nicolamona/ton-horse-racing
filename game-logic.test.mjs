@@ -1,9 +1,17 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { isValidDemoAmount, calculateReward, calculateNet, completeFinishOrder } from "./game-logic.mjs";
+import { isValidDemoAmount, isValidDemoBalance, calculateReward, calculateNet, completeFinishOrder } from "./game-logic.mjs";
 
 test("demo amounts accept whole and half units from one upward", () => {
   for (const amount of [1, 1.5, 2, 50, 1000]) assert.equal(isValidDemoAmount(amount), true);
+});
+
+test("demo balances accept quarter-unit precision produced by third-place rewards", () => {
+  for (const balance of [0, 0.25, 0.75, 999.25, 1000]) assert.equal(isValidDemoBalance(balance), true);
+});
+
+test("demo balances reject negative, non-finite, and unsupported precision", () => {
+  for (const balance of [-0.25, NaN, Infinity, 0.1]) assert.equal(isValidDemoBalance(balance), false);
 });
 
 test("demo amounts reject non-finite, sub-minimum, and non-half values", () => {
@@ -28,8 +36,9 @@ test("places four through eight receive no demo reward", () => {
   for (let place = 4; place <= 8; place++) assert.equal(calculateReward(50, place), 0);
 });
 
-test("demo reward rules preserve half-unit rounding", () => {
-  assert.equal(calculateReward(1.5, 3), 1);
+test("third-place reward preserves the exact half multiplier at quarter-unit precision", () => {
+  assert.equal(calculateReward(1.5, 3), 0.75);
+  assert.equal(calculateNet(0.75, 1.5), -0.75);
 });
 
 test("reward calculator rejects invalid amount or place", () => {
@@ -48,7 +57,7 @@ test("net demo result is reward minus assigned amount", () => {
 test("finish order preserves known finishers and sorts unfinished horses by progress", () => {
   assert.deepEqual(
     completeFinishOrder([0.2, 1, 0.7, 0.3, 0.9, 0.4, 0.8, 0.1], [1, 4]),
-    [1, 4, 2, 6, 3, 5, 0, 7]
+    [1, 4, 6, 2, 5, 3, 0, 7]
   );
 });
 
