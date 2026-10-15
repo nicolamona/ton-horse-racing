@@ -7,6 +7,7 @@ on:
       - "index.html"
       - "game-logic.mjs"
       - "game-logic.test.mjs"
+      - "scripts/**"
       - ".github/workflows/backend-demo-tests.yml"
   push:
     branches:
@@ -32,3 +33,5 @@ jobs:
       - name: Run demo-only safety tests
         working-directory: backend
         run: npm test
+      - name: Check frontend syntax and demo-only guards
+        run: node scripts/check-frontend.mjs
