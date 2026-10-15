@@ -98,15 +98,17 @@ function renderHistory(){
  if(!historyList||!historyEmpty||!historyIdentity)return;
  historyIdentity.textContent=connectedWalletAddress?'Historial de '+connectedWalletAddress.slice(0,6)+'…'+connectedWalletAddress.slice(-6)+' · este dispositivo':'Modo invitado · este dispositivo';
  const rows=loadHistory();
- historyList.replaceChildren();
+ historyList.innerHTML='';
  historyEmpty.hidden=rows.length>0;
  rows.forEach(row=>{const item=document.createElement('li');item.textContent=(row.race||'Carrera demo')+' · Ganador: '+(row.winner||'—')+' · Favorito: '+(row.favorite||'—')+' · '+(row.date||'');historyList.appendChild(item);});
 }
-renderHistory();
+try{renderHistory()}catch(e){console.error('Historial no disponible:',e)}
 cards.innerHTML=names.map((n,i)=>'<div class="horsecard"><div class="emoji">'+(i%2?'🐴':'🐎')+'</div><b>'+(i+1)+' · '+n+'</b><small>Corredor de demo</small></div>').join('');
 function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px'});}
 start.addEventListener('click',()=>{
- if(start.disabled)return;start.disabled=true;reset();result.textContent='¡Ya largaron! 🏇';const lanes=document.querySelector('.track').clientWidth;const max=Math.max(80,lanes*.77);let progress=Array(8).fill(0);let frame=0;
+ if(start.disabled)return;
+ try {start.disabled=true;reset();result.textContent='¡Ya largaron! 🏇';const lanes=document.querySelector('.track').clientWidth;const max=Math.max(80,lanes*.77);let progress=Array(8).fill(0);let frame=0;
  const timer=setInterval(()=>{frame++;progress=progress.map((p)=>Math.min(1,p+(Math.random()*.018+.006)));horses.forEach((h,i)=>h.style.left=(44+progress[i]*max)+'px');const winner=progress.findIndex(p=>p>=1);if(winner>=0||frame>220){clearInterval(timer);const sorted=progress.map((p,i)=>({p,i})).sort((a,b)=>b.p-a.p);const w=winner>=0?winner:sorted[0].i;horses[w].style.filter='drop-shadow(0 0 8px #ffe08a)';result.innerHTML='🏆 Ganador: <strong>'+names[w]+' (#'+(w+1)+')</strong>. '+(Number(favorite.value)===w?'¡Era tu favorito!':'Tu favorito fue '+names[Number(favorite.value)]+'.')+' <span class="small">Resultado solo de entretenimiento.</span>';saveHistory(w,Number(favorite.value));document.querySelector('#raceId').textContent='CARRERA DEMO #'+String(++race).padStart(3,'0');start.disabled=false;}},70);
+ } catch(e) { console.error('Error al iniciar carrera:',e); start.disabled=false; result.textContent='No se pudo iniciar la carrera. Recargá la página e intentá otra vez.'; }
 });
 </script></body></html>
