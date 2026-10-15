@@ -2,6 +2,10 @@ export function isValidDemoAmount(amount) {
   return Number.isFinite(amount) && amount >= 1 && Number.isInteger(amount * 2);
 }
 
+export function isValidDemoBalance(balance) {
+  return Number.isFinite(balance) && balance >= 0 && Number.isInteger(balance * 4);
+}
+
 export function calculateReward(amount, place) {
   if (!isValidDemoAmount(amount)) {
     throw new RangeError("Demo amount must be a finite number >= 1 in 0.5 increments");
@@ -10,11 +14,11 @@ export function calculateReward(amount, place) {
     throw new RangeError("Place must be an integer from 1 through 8");
   }
   const multiplier = place === 1 ? 3 : place === 2 ? 2 : place === 3 ? 0.5 : 0;
-  return Math.round(amount * multiplier * 2) / 2;
+  return Math.round(amount * multiplier * 4) / 4;
 }
 
 export function calculateNet(reward, amount) {
-  return Math.round((reward - amount) * 2) / 2;
+  return Math.round((reward - amount) * 4) / 4;
 }
 
 export function completeFinishOrder(progress, finishOrder) {
