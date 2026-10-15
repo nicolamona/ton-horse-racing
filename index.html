@@ -59,7 +59,7 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <footer>Proyecto de demostración · Fichas virtuales sin valor · Sin apuestas reales · Sin depósitos · Sin transacciones · Sin premios monetarios</footer>
 </main>
 <script type="module">
-import { isValidDemoAmount, calculateReward, calculateNet, completeFinishOrder } from './game-logic.mjs';
+import { isValidDemoAmount, isValidDemoBalance, calculateReward, calculateNet, completeFinishOrder } from './game-logic.mjs';
 const walletStatus=document.querySelector('#walletStatus');
 const depositButton=document.querySelector('#depositDemo');
 const depositInfo=document.querySelector('#depositInfo');
@@ -106,7 +106,7 @@ const historyList=document.querySelector('#raceHistory'),historyEmpty=document.q
 function profileKey(){return connectedWalletAddress?'tonHorseDemo:wallet:'+connectedWalletAddress:'tonHorseDemo:guest'}
 function historyStorageKey(){return profileKey()+':history'}
 function balanceStorageKey(){return profileKey()+':balance'}
-function loadBalance(){try{const raw=localStorage.getItem(balanceStorageKey());if(raw===null)return 1000;const n=Number(raw);return Number.isFinite(n)&&n>=0&&Number.isInteger(n*2)?n:1000}catch{return 1000}}
+function loadBalance(){try{const raw=localStorage.getItem(balanceStorageKey());if(raw===null)return 1000;const n=Number(raw);return Number.isFinite(n)&&n>=0&&isValidDemoBalance(n)?n:1000}catch{return 1000}}
 let demoBalance=loadBalance();
 function persistBalance(){try{localStorage.setItem(balanceStorageKey(),String(demoBalance))}catch{}}
 function renderBalance(){balanceLabel.textContent=demoBalance.toLocaleString('es-AR');amountInput.max=String(demoBalance)}
