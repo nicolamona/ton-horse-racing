@@ -19,7 +19,7 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 .lane-label{z-index:2;width:35px;text-align:center;font-weight:800;color:#f6e7b5;font-size:.8rem;flex-shrink:0}
 .horse{z-index:2;font-size:27px;transform:scaleX(-1);filter:drop-shadow(0 2px 2px #0007);position:absolute;left:44px;transition:left .12s linear}
 .finish{position:absolute;z-index:1;right:calc(10% - 8px);top:0;bottom:0;width:16px;background:repeating-conic-gradient(#fff 0% 25%,#202020 0% 50%) 0/16px 16px;opacity:.8}
-.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}.selectwrap{flex:1;min-width:200px}label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px}select,button{font:inherit;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}select{width:100%;background:#111a14;color:#fff}button{cursor:pointer;font-weight:800;background:var(--gold);border-color:var(--gold);color:#17190f}button:disabled{opacity:.55;cursor:wait}.result{margin-top:16px;padding:14px;border-radius:12px;background:#111a14;border:1px solid var(--line);min-height:54px}.result strong{color:var(--gold)}.horses{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}.history{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:14px;background:#111a14}.history h3{margin:0 0 10px;font-size:1rem}.history ol{margin:0;padding-left:22px}.history li{margin:7px 0;color:#d9e1d8;font-size:.88rem}.history .empty{color:var(--muted);font-size:.86rem}.horsecard{padding:12px;border:1px solid var(--line);border-radius:14px;background:#111a14}.horsecard .emoji{font-size:27px}.horsecard b{display:block;font-size:.9rem}.horsecard small{color:var(--muted)}footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:24px}
+.controls{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-top:18px}.selectwrap{flex:1;min-width:200px}label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px}select,button{font:inherit;border-radius:12px;padding:12px 14px;border:1px solid var(--line)}select{width:100%;background:#111a14;color:#fff}button{cursor:pointer;font-weight:800;background:var(--gold);border-color:var(--gold);color:#17190f}button:disabled{opacity:.55;cursor:wait}.result{margin-top:16px;padding:14px;border-radius:12px;background:#111a14;border:1px solid var(--line);min-height:54px}.result strong{color:var(--gold)}.horses{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:16px}.history{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:14px;background:#111a14}.history h3{margin:0 0 10px;font-size:1rem}.history ol{margin:0;padding-left:22px}.history li{margin:7px 0;color:#d9e1d8;font-size:.88rem}.history .empty{color:var(--muted);font-size:.86rem}.horsecard{padding:12px;border:1px solid var(--line);border-radius:14px;background:#111a14}.horsecard .emoji{font-size:27px}.horsecard b{display:block;font-size:.9rem}.horsecard small{color:var(--muted)}footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:24px}
 @media(max-width:560px){.horses{grid-template-columns:repeat(2,minmax(0,1fr))}.lane{height:46px}.horse{font-size:23px}.panel{padding:12px}}
 </style>
 <script src="https://unpkg.com/@tonconnect/ui@2.0.9/dist/tonconnect-ui.min.js"></script>
@@ -27,7 +27,7 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <body><main>
 <header class="top"><div class="brand">TON <span>HORSE RACING</span></div><div class="tag">ARCADE DEMO · SIN DINERO REAL</div></header>
 <h1>Ocho caballos.<br><em>Una sola meta.</em></h1>
-<p class="sub">Elegí tu caballo favorito y mirá una carrera arcade. El resultado se genera para entretenimiento; no hay apuestas, depósitos ni premios.</p>
+<p class="sub">Elegí tu caballo favorito y corré por diversión con fichas virtuales. Las fichas no tienen valor monetario, no se pueden comprar ni retirar y no son tokens TON reales.</p>
 <section class="walletbox" aria-label="Conexión de billetera">
 <div class="walletcopy"><b>💎 TON Wallet</b><div id="walletStatus" aria-live="polite">Billetera desconectada · conexión opcional</div></div>
 <div class="wallet-actions"><div id="ton-connect"></div><button id="disconnectWallet" type="button" hidden>Desconectar</button></div>
@@ -35,6 +35,7 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <p class="wallet-note">La conexión solo muestra tu dirección pública. Esta demo no solicita firmas, no envía transacciones y no mueve fondos. Nunca compartas tu frase semilla.</p>
 <section class="panel">
 <div class="panelhead"><h2>🏁 Pista principal</h2><span class="small" id="raceId">CARRERA DEMO #001</span></div>
+<div class="walletbox" style="margin:0 0 16px"><div class="walletcopy"><b>💎 Fichas TON de demo</b><div class="small">Sin valor monetario · no son TON reales</div></div><div style="text-align:right"><strong id="demoBalance" style="font-size:1.5rem;color:var(--gold)">1.000</strong><div class="small">fichas disponibles</div></div></div>
 <div class="track" id="track" aria-label="Pista con ocho caballos">
 <div class="finish"></div>
 <div class="lane"><span class="lane-label">1</span><span class="horse" data-horse="0">🐎</span></div>
@@ -46,12 +47,12 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <div class="lane"><span class="lane-label">7</span><span class="horse" data-horse="6">🐎</span></div>
 <div class="lane"><span class="lane-label">8</span><span class="horse" data-horse="7">🐴</span></div>
 </div>
-<div class="controls"><div class="selectwrap"><label for="favorite">Tu caballo favorito (solo elección visual)</label><select id="favorite"><option value="0">1 · Relámpago</option><option value="1">2 · Tormenta</option><option value="2">3 · Centella</option><option value="3">4 · Trueno</option><option value="4">5 · Cometa</option><option value="5">6 · Sombra</option><option value="6">7 · Fuego</option><option value="7">8 · Estrella</option></select></div><button id="start">▶ Iniciar carrera</button></div>
+<div class="controls"><div class="selectwrap"><label for="favorite">Tu caballo favorito</label><select id="favorite"><option value="0">1 · Relámpago</option><option value="1">2 · Tormenta</option><option value="2">3 · Centella</option><option value="3">4 · Trueno</option><option value="4">5 · Cometa</option><option value="5">6 · Sombra</option><option value="6">7 · Fuego</option><option value="7">8 · Estrella</option></select></div><div class="selectwrap"><label for="demoAmount">Fichas virtuales asignadas a esta carrera</label><input id="demoAmount" type="number" min="1" max="1000" step="1" value="50" inputmode="numeric" style="width:100%;background:#111a14;color:#fff;font:inherit;border-radius:12px;padding:12px 14px;border:1px solid var(--line)"><div class="small" style="margin-top:5px">Se descuentan del saldo ficticio y quedan registradas en el historial.</div></div><button id="start">▶ Iniciar carrera</button></div>
 <div class="result" id="result" aria-live="polite">Elegí un favorito y comenzá una carrera de demostración.</div>
 <div class="horses" id="horseCards"></div>
 <div class="history"><h3>📜 Historial del jugador</h3><p class="small" id="historyIdentity">Modo invitado · este dispositivo</p><p class="empty" id="historyEmpty">Todavía no jugaste ninguna carrera en este perfil.</p><ol id="raceHistory"></ol><p class="wallet-note">El historial local se separa por dirección conectada en este dispositivo. La sincronización entre dispositivos requiere desplegar la API; la dirección pública por sí sola no demuestra que alguien sea su dueño.</p></div>
 </section>
-<footer>Proyecto de demostración · Sin apuestas · Sin depósitos · Sin transacciones · Resultado aleatorio para entretenimiento</footer>
+<footer>Proyecto de demostración · Fichas virtuales sin valor · Sin apuestas reales · Sin depósitos · Sin transacciones · Sin premios monetarios</footer>
 </main>
 <script>
 const walletStatus=document.querySelector('#walletStatus');
@@ -70,11 +71,13 @@ try {
    const address=wallet.account.address;
    connectedWalletAddress=address;
    refreshHistorySafely();
+   try{switchProfile()}catch(e){console.error('No se pudo cargar el perfil de fichas:',e)}
    walletStatus.textContent='Conectada · '+address.slice(0,6)+'…'+address.slice(-6);
    disconnectButton.hidden=false;
   } else {
    connectedWalletAddress='';
    refreshHistorySafely();
+   try{switchProfile()}catch(e){console.error('No se pudo cargar el perfil de fichas:',e)}
    walletStatus.textContent='Billetera desconectada · conexión opcional';
    disconnectButton.hidden=true;
   }
@@ -87,28 +90,43 @@ try {
  walletStatus.textContent='TON Connect no se pudo cargar. Revisá tu conexión e intentá actualizar.';
 }
 const names=['Relámpago','Tormenta','Centella','Trueno','Cometa','Sombra','Fuego','Estrella'];
-const horses=[...document.querySelectorAll('.horse')], start=document.querySelector('#start'), result=document.querySelector('#result'), favorite=document.querySelector('#favorite');
+const horses=[...document.querySelectorAll('.horse')], start=document.querySelector('#start'), result=document.querySelector('#result'), favorite=document.querySelector('#favorite'), amountInput=document.querySelector('#demoAmount'), balanceLabel=document.querySelector('#demoBalance');
 const cards=document.querySelector('#horseCards');let race=1;
 const historyList=document.querySelector('#raceHistory'),historyEmpty=document.querySelector('#historyEmpty'),historyIdentity=document.querySelector('#historyIdentity');
-function historyStorageKey(){return connectedWalletAddress?'tonHorseDemoHistory:wallet:'+connectedWalletAddress:'tonHorseDemoHistory:guest'}
+function profileKey(){return connectedWalletAddress?'tonHorseDemo:wallet:'+connectedWalletAddress:'tonHorseDemo:guest'}
+function historyStorageKey(){return profileKey()+':history'}
+function balanceStorageKey(){return profileKey()+':balance'}
+function loadBalance(){try{const raw=localStorage.getItem(balanceStorageKey());if(raw===null)return 1000;const n=Number(raw);return Number.isSafeInteger(n)&&n>=0?n:1000}catch{return 1000}}
+let demoBalance=loadBalance();
+function persistBalance(){try{localStorage.setItem(balanceStorageKey(),String(demoBalance))}catch{}}
+function renderBalance(){balanceLabel.textContent=demoBalance.toLocaleString('es-AR');amountInput.max=String(demoBalance)}
 function loadHistory(){try{const rows=JSON.parse(localStorage.getItem(historyStorageKey())||'[]');return Array.isArray(rows)?rows.slice(0,10):[]}catch{return []}}
-function escapeHtml(value){return String(value).replace(/[&<>"']/g,char=>{if(char==='&')return '&amp;';if(char==='<')return '&lt;';if(char==='>')return '&gt;';if(char==='"')return '&quot;';return '&#39;';});}
-function saveHistory(winnerIndex,favoriteIndex){const rows=loadHistory();rows.unshift({race:document.querySelector('#raceId').textContent,winner:names[winnerIndex],favorite:names[favoriteIndex],date:new Date().toLocaleString()});try{localStorage.setItem(historyStorageKey(),JSON.stringify(rows.slice(0,10)))}catch{}renderHistory();}
+function saveHistory(winnerIndex,favoriteIndex,amount){const rows=loadHistory();rows.unshift({race:document.querySelector('#raceId').textContent,winner:names[winnerIndex],favorite:names[favoriteIndex],amount:amount,date:new Date().toLocaleString()});try{localStorage.setItem(historyStorageKey(),JSON.stringify(rows.slice(0,10)))}catch{}renderHistory();}
 function renderHistory(){
  if(!historyList||!historyEmpty||!historyIdentity)return;
  historyIdentity.textContent=connectedWalletAddress?'Historial de '+connectedWalletAddress.slice(0,6)+'…'+connectedWalletAddress.slice(-6)+' · este dispositivo':'Modo invitado · este dispositivo';
  const rows=loadHistory();
  historyList.innerHTML='';
  historyEmpty.hidden=rows.length>0;
- rows.forEach(row=>{const item=document.createElement('li');item.textContent=(row.race||'Carrera demo')+' · Ganador: '+(row.winner||'—')+' · Favorito: '+(row.favorite||'—')+' · '+(row.date||'');historyList.appendChild(item);});
+ rows.forEach(row=>{const item=document.createElement('li');item.textContent=(row.race||'Carrera demo')+' · Fichas: '+(Number.isFinite(Number(row.amount))?Number(row.amount).toLocaleString('es-AR'):'—')+' · Ganador: '+(row.winner||'—')+' · Favorito: '+(row.favorite||'—')+' · '+(row.date||'');historyList.appendChild(item);});
 }
-try{renderHistory()}catch(e){console.error('Historial no disponible:',e)}
+function switchProfile(){demoBalance=loadBalance();renderBalance();renderHistory();}
+try{switchProfile()}catch(e){console.error('Perfil demo no disponible:',e)}
 cards.innerHTML=names.map((n,i)=>'<div class="horsecard"><div class="emoji">'+(i%2?'🐴':'🐎')+'</div><b>'+(i+1)+' · '+n+'</b><small>Corredor de demo</small></div>').join('');
-function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px'});}
+function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px';h.style.filter='drop-shadow(0 2px 2px #0007)'});}
 start.addEventListener('click',()=>{
  if(start.disabled)return;
- try {start.disabled=true;reset();result.textContent='¡Ya largaron! 🏇';const lanes=document.querySelector('.track').clientWidth;const max=Math.max(80,lanes*.77);let progress=Array(8).fill(0);let frame=0;
- const timer=setInterval(()=>{frame++;progress=progress.map((p)=>Math.min(1,p+(Math.random()*.018+.006)));horses.forEach((h,i)=>h.style.left=(44+progress[i]*max)+'px');const winner=progress.findIndex(p=>p>=1);if(winner>=0||frame>220){clearInterval(timer);const sorted=progress.map((p,i)=>({p,i})).sort((a,b)=>b.p-a.p);const w=winner>=0?winner:sorted[0].i;horses[w].style.filter='drop-shadow(0 0 8px #ffe08a)';result.innerHTML='🏆 Ganador: <strong>'+names[w]+' (#'+(w+1)+')</strong>. '+(Number(favorite.value)===w?'¡Era tu favorito!':'Tu favorito fue '+names[Number(favorite.value)]+'.')+' <span class="small">Resultado solo de entretenimiento.</span>';saveHistory(w,Number(favorite.value));document.querySelector('#raceId').textContent='CARRERA DEMO #'+String(++race).padStart(3,'0');start.disabled=false;}},70);
+ const amount=Number(amountInput.value);
+ if(!Number.isSafeInteger(amount)||amount<1){result.textContent='Ingresá una cantidad entera de fichas virtuales mayor que cero.';return;}
+ if(amount>demoBalance){result.textContent='No tenés suficientes fichas virtuales para esa cantidad.';return;}
+ try {
+  demoBalance-=amount;persistBalance();renderBalance();
+  try{localStorage.setItem(profileKey()+':lastAmount',String(amount))}catch{}
+  start.disabled=true;reset();result.textContent='¡Ya largaron! 🏇 · '+amount.toLocaleString('es-AR')+' fichas virtuales registradas';const lanes=document.querySelector('.track').clientWidth;const max=Math.max(80,lanes*.77);let progress=Array(8).fill(0);let frame=0;
+  const timer=setInterval(()=>{frame++;progress=progress.map((p)=>Math.min(1,p+(Math.random()*.018+.006)));horses.forEach((h,i)=>h.style.left=(44+progress[i]*max)+'px');const winner=progress.findIndex(p=>p>=1);if(winner>=0||frame>220){clearInterval(timer);const sorted=progress.map((p,i)=>({p,i})).sort((a,b)=>b.p-a.p);const w=winner>=0?winner:sorted[0].i;horses[w].style.filter='drop-shadow(0 0 8px #ffe08a)';result.innerHTML='🏆 Ganador: <strong>'+names[w]+' (#'+(w+1)+')</strong>. '+(Number(favorite.value)===w?'¡Era tu favorito!':'Tu favorito fue '+names[Number(favorite.value)]+'.')+' <span class="small">Carrera de entretenimiento; las fichas no tienen valor monetario.</span>';saveHistory(w,Number(favorite.value),amount);document.querySelector('#raceId').textContent='CARRERA DEMO #'+String(++race).padStart(3,'0');start.disabled=false;}},70);
  } catch(e) { console.error('Error al iniciar carrera:',e); start.disabled=false; result.textContent='No se pudo iniciar la carrera. Recargá la página e intentá otra vez.'; }
 });
+amountInput.addEventListener('change',()=>{const amount=Number(amountInput.value);if(Number.isSafeInteger(amount)&&amount>0){try{localStorage.setItem(profileKey()+':lastAmount',String(amount))}catch{}}});
+try{const last=Number(localStorage.getItem(profileKey()+':lastAmount'));if(Number.isSafeInteger(last)&&last>0)amountInput.value=String(last)}catch{}
+
 </script></body></html>
