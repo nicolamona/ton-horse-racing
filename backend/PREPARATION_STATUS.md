@@ -17,7 +17,7 @@ Last reviewed: 2026-10-15
 ## Automated checks
 
 - Run locally with Node.js 18 or newer: `cd backend && npm test`.
-- The current suite contains 37 automated tests: 23 backend/HTTP tests and 14 demo game-rule tests. The latest PR workflow passed all 37 tests with zero failures.
+- The current suite contains 38 automated tests: 24 backend/HTTP tests and 14 demo game-rule tests. The latest push and pull-request workflows passed all 38 tests with zero failures; the frontend syntax/demo-only guard check also passed.
 - The suite now covers demo-only health, blocked financial routes, CORS origin behavior, preflight, route/method handling, malformed JSON, JSON type validation, body size, race ID and wallet-address formats, horse number validation, parameterized SQL, duplicate IDs, and generic database error responses.
 - GitHub Actions runs the tests for relevant changes on `main` and `security-readiness-prep`, and for pull requests touching backend/workflow files.
 - CI results must be read from the linked run and must not be inferred from a local commit. The expanded suite has to complete successfully before this branch can be considered validated.
