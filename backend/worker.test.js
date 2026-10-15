@@ -255,3 +255,37 @@ test("unsupported methods on race endpoint return 405", async () => {
   assert.equal(response.headers.get("allow"), "GET, POST, OPTIONS");
   assert.deepEqual(await response.json(), { error: "method_not_allowed" });
 });
+
+test("financial routes remain disabled even if environment flags claim otherwise", async () => {
+  const env = {
+    PAYMENTS_ENABLED: true,
+    TRANSACTIONS_ENABLED: true,
+    ENABLE_PAYMENTS: "true",
+    ENABLE_TRANSACTIONS: "true",
+    DB: {
+      prepare() {
+        throw new Error("financial route must not touch storage");
+      }
+    }
+  };
+
+  for (const path of [
+    "/api/payments",
+    "/api/payments/deposit",
+    "/api/transactions",
+    "/api/transactions/send"
+  ]) {
+    for (const method of ["GET", "POST", "DELETE"]) {
+      const response = await call(path, {
+        method,
+        body: "{malformed",
+        contentType: "application/json"
+      }, env);
+      assert.equal(response.status, 403, path + " " + method);
+      const body = await response.json();
+      assert.equal(body.enabled, false);
+      assert.equal(body.error, "payments_and_blockchain_transactions_are_disabled");
+    }
+  }
+});
+
