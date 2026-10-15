@@ -48,28 +48,32 @@ export default {
 
     if (url.pathname === "/api/races" && request.method === "GET") {
       const limit = Math.min(50, Math.max(1, Number(url.searchParams.get("limit")) || 20));
+      const walletAddress = url.searchParams.get("walletAddress") || "";
+      if (!/^[-_a-zA-Z0-9:]{20,100}$/.test(walletAddress)) return json({ error: "valid_wallet_address_required" }, 400);
       const { results } = await env.DB.prepare(
-        "SELECT race_id, selected_horse, winner_horse, created_at FROM demo_races ORDER BY created_at DESC LIMIT ?"
-      ).bind(limit).all();
-      return json({ mode: "demo-only", races: results || [] });
+        "SELECT race_id, selected_horse, winner_horse, created_at FROM demo_races WHERE wallet_address = ? ORDER BY created_at DESC LIMIT ?"
+      ).bind(walletAddress, limit).all();
+      return json({ mode: "demo-only", walletAddress, races: results || [] });
     }
 
     if (url.pathname === "/api/races" && request.method === "POST") {
       let body;
       try { body = await request.json(); } catch { return json({ error: "invalid_json" }, 400); }
       const raceId = typeof body.raceId === "string" ? body.raceId.trim() : "";
+      const walletAddress = typeof body.walletAddress === "string" ? body.walletAddress.trim() : "";
       const selectedHorse = Number(body.selectedHorse);
       const winnerHorse = Number(body.winnerHorse);
 
       if (!/^[a-zA-Z0-9_-]{8,80}$/.test(raceId)) return json({ error: "invalid_race_id" }, 400);
+      if (!/^[-_a-zA-Z0-9:]{20,100}$/.test(walletAddress)) return json({ error: "valid_wallet_address_required" }, 400);
       if (![1,2,3,4,5,6,7,8].includes(selectedHorse) || ![1,2,3,4,5,6,7,8].includes(winnerHorse)) {
         return json({ error: "horse_must_be_between_1_and_8" }, 400);
       }
 
       try {
         await env.DB.prepare(
-          "INSERT INTO demo_races (race_id, selected_horse, winner_horse) VALUES (?, ?, ?)"
-        ).bind(raceId, selectedHorse, winnerHorse).run();
+          "INSERT INTO demo_races (race_id, wallet_address, selected_horse, winner_horse) VALUES (?, ?, ?, ?)"
+        ).bind(raceId, walletAddress, selectedHorse, winnerHorse).run();
       } catch (error) {
         if (String(error).toLowerCase().includes("unique")) {
           return json({ ok: true, duplicate: true, mode: "demo-only" });
