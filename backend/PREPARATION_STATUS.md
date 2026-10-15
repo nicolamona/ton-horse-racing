@@ -12,7 +12,7 @@ Last reviewed: 2026-10-15
 - The frontend uses a small tested game-rules module for fictional reward calculation and finish-order completion. Third-place rewards retain quarter-unit precision so balances remain valid after reload.
 - `backend/wrangler.toml` still contains `REPLACE_WITH_YOUR_D1_DATABASE_ID`.
 - The Worker reports `paymentsEnabled: false` and rejects payment/transaction route families with HTTP 403.
-- The main branch was observed without branch protection or required status checks. Review repository settings before relying on CI as an enforced merge gate.
+- Branch protection and required status checks could not be verified through the available GitHub integration (API access was denied). Confirm them in repository settings before relying on CI as an enforced merge gate.
 
 ## Automated checks
 
