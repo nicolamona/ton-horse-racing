@@ -20,7 +20,7 @@ This runbook is for the static arcade demo and the optional demo-only Worker. It
 5. Confirm the wallet connection only displays the public address and does not request signatures or send transactions.
 
 ### Automated backend checks
-Run from the repository root:
+Run from the repository root. The test command also runs the pure game-rule tests in `game-logic.test.mjs`:
 
 ```sh
 cd backend
@@ -28,7 +28,7 @@ node --version
 npm test
 ```
 
-Use Node.js 18 or newer. The suite uses Node's built-in test runner and does not require third-party test dependencies. Also inspect the GitHub Actions run attached to the PR; a local pass is not a substitute for the required CI result.
+Use Node.js 18 or newer. The suite uses Node's built-in test runner and does not require third-party test dependencies. The current CI run covers 37 tests; this does not replace browser-level end-to-end testing. Also inspect the GitHub Actions run attached to the PR; a local pass is not a substitute for the required CI result.
 
 ### Optional Worker health
 Only if an authorized operator has separately deployed the demo Worker, request `GET /health` from an approved test client. Expect `mode: "demo-only"`, `paymentsEnabled: false`, and a boolean `storageConfigured`. A healthy response does not prove the D1 schema is correct or the service is secure.
