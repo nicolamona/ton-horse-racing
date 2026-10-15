@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - "backend/**"
+      - "index.html"
+      - "game-logic.mjs"
+      - "game-logic.test.mjs"
       - ".github/workflows/backend-demo-tests.yml"
   push:
     branches:
