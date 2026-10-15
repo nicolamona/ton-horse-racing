@@ -30,7 +30,11 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 <p class="sub">Elegí tu caballo favorito y corré por diversión con fichas virtuales. Las fichas no tienen valor monetario, no se pueden comprar ni retirar y no son tokens TON reales.</p>
 <section class="walletbox" aria-label="Conexión de billetera">
 <div class="walletcopy"><b>💎 TON Wallet</b><div id="walletStatus" aria-live="polite">Billetera desconectada · conexión opcional</div></div>
-<div class="wallet-actions"><div id="ton-connect"></div><button id="disconnectWallet" type="button" hidden>Desconectar</button></div>
+<div class="wallet-actions"><div id="ton-connect"></div><button id="depositDemo" type="button" style="background:linear-gradient(135deg,#f4d98d,#d8ad4e);border-color:#f4d98d;color:#17190f">💎 Depositar</button><button id="disconnectWallet" type="button" hidden>Desconectar</button></div>
+</section>
+<section id="depositInfo" class="walletbox" hidden style="display:none;border-color:#e8c879;background:linear-gradient(145deg,#3a1925,#241018)" aria-live="polite">
+<div class="walletcopy"><b>💎 Depósitos deshabilitados</b><div class="small">Esta versión es una demo arcade. No se aceptan depósitos de TON ni pagos reales. Las fichas son ficticias y no tienen valor monetario.</div></div>
+<button id="closeDepositInfo" type="button" style="background:#351923;color:#f4f4e9;border-color:#684052">Cerrar</button>
 </section>
 <p class="wallet-note">La conexión solo muestra tu dirección pública. Esta demo no solicita firmas, no envía transacciones y no mueve fondos. Nunca compartas tu frase semilla.</p>
 <section class="panel">
@@ -56,6 +60,11 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 </main>
 <script>
 const walletStatus=document.querySelector('#walletStatus');
+const depositButton=document.querySelector('#depositDemo');
+const depositInfo=document.querySelector('#depositInfo');
+const closeDepositInfo=document.querySelector('#closeDepositInfo');
+depositButton.addEventListener('click',()=>{depositInfo.hidden=false;depositInfo.style.display='flex';});
+closeDepositInfo.addEventListener('click',()=>{depositInfo.hidden=true;depositInfo.style.display='none';});
 const disconnectButton=document.querySelector('#disconnectWallet');
 let connectedWalletAddress='';
 function refreshHistorySafely(){try{renderHistory()}catch(e){/* The wallet callback may fire before history elements initialize. */}}
