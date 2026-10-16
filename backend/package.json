@@ -1,0 +1,11 @@
+{
+  "name": "ton-horse-racing-demo-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test *.test.js ../game-logic.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -58,7 +58,8 @@ h1{font-size:clamp(2rem,6vw,4rem);line-height:1.02;margin:34px 0 10px;letter-spa
 </section>
 <footer>Proyecto de demostración · Fichas virtuales sin valor · Sin apuestas reales · Sin depósitos · Sin transacciones · Sin premios monetarios</footer>
 </main>
-<script>
+<script type="module">
+import { isValidDemoAmount, isValidDemoBalance, calculateReward, calculateNet, completeFinishOrder } from './game-logic.mjs';
 const walletStatus=document.querySelector('#walletStatus');
 const depositButton=document.querySelector('#depositDemo');
 const depositInfo=document.querySelector('#depositInfo');
@@ -105,7 +106,7 @@ const historyList=document.querySelector('#raceHistory'),historyEmpty=document.q
 function profileKey(){return connectedWalletAddress?'tonHorseDemo:wallet:'+connectedWalletAddress:'tonHorseDemo:guest'}
 function historyStorageKey(){return profileKey()+':history'}
 function balanceStorageKey(){return profileKey()+':balance'}
-function loadBalance(){try{const raw=localStorage.getItem(balanceStorageKey());if(raw===null)return 1000;const n=Number(raw);return Number.isFinite(n)&&n>=0&&Number.isInteger(n*2)?n:1000}catch{return 1000}}
+function loadBalance(){try{const raw=localStorage.getItem(balanceStorageKey());if(raw===null)return 1000;const n=Number(raw);return Number.isFinite(n)&&n>=0&&isValidDemoBalance(n)?n:1000}catch{return 1000}}
 let demoBalance=loadBalance();
 function persistBalance(){try{localStorage.setItem(balanceStorageKey(),String(demoBalance))}catch{}}
 function renderBalance(){balanceLabel.textContent=demoBalance.toLocaleString('es-AR');amountInput.max=String(demoBalance)}
@@ -127,7 +128,7 @@ function reset(){horses.forEach(h=>{h.style.transition='none';h.style.left='44px
 start.addEventListener('click',()=>{
  if(start.disabled)return;
  const amount=Number(amountInput.value);
- if(!Number.isFinite(amount)||amount<1||!Number.isInteger(amount*2)){result.textContent='Ingresá una cantidad de fichas virtuales positiva en incrementos de 0,5.';return;}
+ if(!isValidDemoAmount(amount)){result.textContent='Ingresá una cantidad de fichas virtuales positiva en incrementos de 0,5.';return;}
  if(amount>demoBalance){result.textContent='No tenés suficientes fichas virtuales para esa cantidad.';return;}
  try {
   demoBalance=Math.round((demoBalance-amount)*2)/2;persistBalance();renderBalance();
@@ -142,12 +143,10 @@ start.addEventListener('click',()=>{
    justFinished.forEach(i=>finishOrder.push(i));
    if(finishOrder.length===8||frame>220){
     clearInterval(timer);
-    const remaining=progress.map((p,i)=>({p,i})).filter(x=>!finishOrder.includes(x.i)).sort((a,b)=>b.p-a.p).map(x=>x.i);
-    remaining.forEach(i=>finishOrder.push(i));
-    const winner=finishOrder[0];const favoriteIndex=Number(favorite.value);const place=finishOrder.indexOf(favoriteIndex)+1;
-    const multiplier=place===1?3:place===2?2:place===3?0.5:0;
-    const reward=Math.round(amount*multiplier*2)/2;
-    const net=Math.round((reward-amount)*2)/2;
+    const completedOrder=completeFinishOrder(progress,finishOrder);
+    const winner=completedOrder[0];const favoriteIndex=Number(favorite.value);const place=completedOrder.indexOf(favoriteIndex)+1;
+    const reward=calculateReward(amount,place);
+    const net=calculateNet(reward,amount);
     demoBalance=Math.round((demoBalance+reward)*2)/2;persistBalance();renderBalance();
     horses[winner].style.filter='drop-shadow(0 0 8px #ffe08a)';
     const placementLabel=place===1?'🥇 1.º PUESTO':place===2?'🥈 2.º PUESTO':place===3?'🥉 3.º PUESTO':place+'.º PUESTO';

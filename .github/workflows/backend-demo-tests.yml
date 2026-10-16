@@ -1,0 +1,51 @@
+name: Backend demo safety tests
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - "index.html"
+      - "game-logic.mjs"
+      - "game-logic.test.mjs"
+      - "scripts/**"
+      - ".github/workflows/backend-demo-tests.yml"
+  push:
+    branches:
+      - main
+      - security-readiness-prep
+    paths:
+      - "backend/**"
+      - "index.html"
+      - "game-logic.mjs"
+      - "game-logic.test.mjs"
+      - "scripts/**"
+      - ".github/workflows/backend-demo-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  demo-safety-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      - name: Run demo-only safety tests
+        working-directory: backend
+        run: npm test
+      - name: Check frontend syntax and demo-only guards
+        run: node scripts/check-frontend.mjs
+      - name: Scan tracked source for common hard-coded secrets
+        run: node scripts/check-secrets.mjs
+      - name: Install browser test dependency
+        run: npm install --no-save --no-package-lock playwright@1.56.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start local demo server
+        run: python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/ton-horse-demo-http.log 2>&1 &
+      - name: Run browser smoke test
+        run: node scripts/browser-smoke.mjs
