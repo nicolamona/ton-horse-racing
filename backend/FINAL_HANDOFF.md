@@ -1,6 +1,6 @@
 # Final handoff — TON Horse Racing preparation
 
-**Reviewed:** 2026-10-15  
+**Reviewed:** 2026-10-16  
 **Branch:** `security-readiness-prep`  
 **Pull request:** #1 — https://github.com/nicolamona/ton-horse-racing/pull/1  
 **Scope:** source-level preparation and demo safety only.
@@ -47,7 +47,7 @@ cd backend
 npm test
 ```
 
-The prior documented suite had 52 tests. Five unit tests were added for the Testnet inspector and five mocked unit tests for the Mainnet inspector, for 62 expected tests if all existing tests remain unchanged. These new tests and the latest branch head have not yet been confirmed by CI. The previously recorded GitHub Actions run passed for an earlier commit; it does not validate these latest additions. Re-run CI for the current branch head before treating the latest code as tested.
+GitHub Actions run [38827690498](https://github.com/nicolamona/ton-horse-racing/actions/runs/38827690498) completed successfully for the pull-request merge ref associated with the current PR snapshot (merge commit `36be34446387293e1dc730c25d5075834d04f69b`, including head `3a8db0f4e3c62d28a734cc18e7d20fd62b29caec`). The log reports **62 tests, 62 passed, 0 failed**. The frontend syntax and demo-only guard step also passed. This is CI evidence for the tested PR merge snapshot, not proof of production safety or live integration.
 
 ## Verified limitations / remaining review
 
@@ -62,7 +62,7 @@ The prior documented suite had 52 tests. Five unit tests were added for the Test
 
 ## Safe completion criteria for this preparation branch
 
-- [ ] Re-run and inspect CI for the exact branch head.
+- [x] Inspect CI for the current PR merge snapshot: run 38827690498 succeeded (62/62 tests; frontend syntax/demo-only guards passed). Re-run after any further code changes.
 - [ ] Complete independent secret/history and dependency scans; record scope and results.
 - [ ] Pin GitHub Actions to verified immutable commit SHAs.
 - [ ] Configure required review/status checks and deployment permissions in repository settings.
