@@ -47,7 +47,7 @@ cd backend
 npm test
 ```
 
-GitHub Actions run [38827690498](https://github.com/nicolamona/ton-horse-racing/actions/runs/38827690498) completed successfully for the pull-request merge ref associated with the current PR snapshot (merge commit `36be34446387293e1dc730c25d5075834d04f69b`, including head `3a8db0f4e3c62d28a734cc18e7d20fd62b29caec`). The log reports **62 tests, 62 passed, 0 failed**. The frontend syntax and demo-only guard step also passed. This is CI evidence for the tested PR merge snapshot, not proof of production safety or live integration.
+GitHub Actions run [38827690498](https://github.com/nicolamona/ton-horse-racing/actions/runs/38827690498) passed for an earlier PR merge snapshot: **62 tests, 62 passed, 0 failed**, plus frontend syntax and demo-only guard checks. After that run, browser smoke coverage and a heuristic tracked-source secret-pattern check were added to `.github/workflows/backend-demo-tests.yml`. The current head is `e2c8fc056a4bdd2aa791f9008cb7e1dd30cc449b`; no workflow run/status has yet been confirmed for this latest head. The new checks must pass in CI before they can be considered verified.
 
 ## Verified limitations / remaining review
 
@@ -62,8 +62,9 @@ GitHub Actions run [38827690498](https://github.com/nicolamona/ton-horse-racing/
 
 ## Safe completion criteria for this preparation branch
 
-- [x] Inspect CI for the current PR merge snapshot: run 38827690498 succeeded (62/62 tests; frontend syntax/demo-only guards passed). Re-run after any further code changes.
-- [ ] Complete independent secret/history and dependency scans; record scope and results.
+- [x] Inspect prior CI snapshot: run 38827690498 succeeded (62/62 tests; frontend syntax/demo-only guards passed).
+- [ ] Confirm CI for current head `e2c8fc056a4bdd2aa791f9008cb7e1dd30cc449b`, including new browser smoke and heuristic secret-pattern checks.
+- [ ] Complete independent secret/history and dependency/SCA/license scans; the new heuristic source scan is not a substitute.
 - [ ] Pin GitHub Actions to verified immutable commit SHAs.
 - [ ] Configure required review/status checks and deployment permissions in repository settings.
 - [ ] Add browser E2E coverage for demo UI, history, reload, and error paths.
