@@ -13,8 +13,19 @@
 - The optional Worker is a demo scaffold; its D1 ID is still a placeholder.
 - `/api/payments` and `/api/transactions` route families return HTTP 403 regardless of environment flags and before database access.
 - `backend/ton-verifier.js` checks normalized test fixtures only. It is not connected to a TON node/provider, does not prove a blockchain transaction, does not persist durable records, and cannot credit balances.
+- `backend/ton-testnet-readonly.js` is a separate, opt-in command-line inspector that queries only the TON Center TESTNET transaction-history endpoint. It reports basic transaction identifiers/timestamps only. It is not wired into the Worker or game, does not verify deposits, does not establish independent finality, and cannot modify balances.
 - No wallet signing, transaction submission, real balance ledger, payout, or mainnet operation is implemented by this preparation.
 - The preparation PR remains open as a draft and has not been merged. Do not merge or deploy as an implicit approval.
+
+## Read-only Testnet inspector
+
+Requires Node.js 18 or newer. Run locally with a wallet address intended for TON Testnet:
+
+```sh
+node backend/ton-testnet-readonly.js <testnet-wallet-address>
+```
+
+An optional `TONCENTER_TESTNET_API_KEY` environment variable can be supplied for provider access/rate limits. Do not put API keys in source control. The script uses a fixed `https://testnet.toncenter.com` endpoint, performs a GET request, and has no signing, submission, deposit-crediting, or database code. Use only a testnet address; provider results are informational.
 
 ## Automated checks
 
@@ -25,12 +36,13 @@ cd backend
 npm test
 ```
 
-The documented suite contains 52 expected tests: 24 Worker/mock-D1 tests, 14 game-rule tests, and 14 fixture-verifier tests. GitHub Actions run 38825513490 passed for the verifier/test commit. That result does not establish a live deployment or a live blockchain integration. Run CI again for the current branch head before treating the latest documentation commit as validated.
+The prior documented suite had 52 tests. Five unit tests were added for the read-only inspector, for 57 expected tests if all existing tests remain unchanged. The previously recorded GitHub Actions run passed for an earlier commit; it does not validate these latest additions. Re-run CI for the current branch head before treating the latest code as tested.
 
 ## Verified limitations / remaining review
 
 - No live Worker/D1 integration or browser end-to-end test was run.
-- No TON testnet transaction was independently queried or cryptographically verified.
+- The new inspector has not yet been run against the live TON Testnet provider; no transaction was queried as part of this change.
+- No TON testnet transaction was independently verified for finality or deposit purposes.
 - No independent secret/history scan or dependency/SCA/license scan was completed.
 - Branch protection and required checks are not confirmed as enabled; prior repository metadata reported both relevant branches unprotected.
 - No dedicated rate limiter, authenticated user identity, wallet-ownership proof, server-authoritative race engine, or real-asset ledger exists.
